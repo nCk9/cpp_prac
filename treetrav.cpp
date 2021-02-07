@@ -1,5 +1,4 @@
-#include<iostream>
-#include<unordered_map>
+#include<bits/stdc++.h>
 using namespace std;
 
 typedef class node{
@@ -9,7 +8,6 @@ typedef class node{
     node *right;
 }tree;
 
-unordered_map<int, bool> vis;
 tree *root = NULL;
 
 void inorder(tree *node)
@@ -17,7 +15,7 @@ void inorder(tree *node)
     if(node != NULL)
     {
         inorder(node -> left);
-        cout << node -> data << "\n";
+        cout << node -> data << " ";
         inorder(node -> right);
     }
 }
@@ -30,12 +28,27 @@ int dfs(tree *temp)
         
     else
     {
-        cout << temp -> data << " ";
-        if(!vis[temp -> data])
+        // cout << temp -> data << " ";   
+        // if(!vis[temp -> data])   //recursive
+        // {
+        //     dfs(temp -> left);
+        //     dfs(temp -> right);
+        //     vis[temp -> data] = true;
+        // }
+        unordered_map<int, bool> vis;
+        stack<tree*> stk;
+        stk.push(temp);
+
+        while(!stk.empty())    //iterative
         {
-            dfs(temp -> left);
-            dfs(temp -> right);
-            vis[temp -> data] = true;
+            tree* x = stk.top();
+            stk.pop();
+            if(!vis[x->data])
+                cout << x -> data << " ", vis[x->data] = true;
+            if(x -> left != NULL)
+                stk.push(x -> left);
+            if(x -> right != NULL)
+                stk.push(x -> right);
         }
     }
     
@@ -43,7 +56,25 @@ int dfs(tree *temp)
 
 int bfs(tree *temp)
 {
+    if(temp != NULL)
+    {   
+        unordered_map<int, bool> vis;
+        queue<tree*> qu;
+        qu.push(temp);
+        while(!qu.empty())
+        {
+            tree* x = qu.front();
+            qu.pop();
+            if(!vis[x -> data])
+                cout << x -> data << " ", vis[x -> data] = true;
 
+            if(x -> left != NULL)
+                qu.push(x -> left);
+
+            if(x -> right != NULL)
+                qu.push(x -> right);
+        }
+    }
 }
 
 void insert(tree *newnd, tree* temp_root)
@@ -52,13 +83,15 @@ void insert(tree *newnd, tree* temp_root)
         {
             if(temp_root -> left == NULL)
                 temp_root -> left = newnd;
-            else insert(newnd, temp_root -> left);
+            else 
+                insert(newnd, temp_root -> left);
         }
     else
     {
         if(temp_root -> right == NULL)
             temp_root -> right = newnd;
-        else insert(newnd, temp_root -> right);
+        else 
+            insert(newnd, temp_root -> right);
     }
     
 }
@@ -99,9 +132,9 @@ int main()
                 break;
             case 3 : dfs(root);
                 break;
-            // case 4 : bfs(root);
-            //     break;
-            case 5 : exit();
+            case 4 : bfs(root);
+                break;
+            case 5 : exit(0);
         }
     }
 }
